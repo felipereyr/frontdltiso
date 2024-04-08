@@ -17,7 +17,7 @@ export default function Premium() {
                 Funciones para ver la documentación
             </PremiumData>
             <PremiumData>
-                Dashboard Inteligent
+                Dashboard Inteligent prueba
             </PremiumData>
             <PremiumData>
                 Wizard ISO 27001
