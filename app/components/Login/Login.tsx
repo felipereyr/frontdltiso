@@ -1,22 +1,74 @@
+'use client'
+//Imports
+import { useState } from "react";
+import { signIn } from 'next-auth/react'
+import { useRouter } from "next/navigation";
+
+//Components
+import ErrorModal from "./ErrorModal";
 import ButtonCustom from "./ButtonCustom";
 import InputForm from "./InputForm";
 import Image from 'next/image'
 import Link from "next/link";
+import {GoogleSignInButton} from "./AuthButtons"
+import { GithubSignInButton } from "./AuthButtons";
+
 
 export default function Login(){
+  const router= useRouter()
+  const [errors, setErrors] = useState(false);
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("123123");
+
+  const handleMailChange=(e:any)=>{
+    setEmail(e.target.value)
+    
+  }
+  const handlePassChange=(e:any)=>{
+    setPassword(e.target.value)
+  }
+  const handleSubmit=async(e:any)=>{
+    e.preventDefault()
+
+    const responseNextAuth = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    
+    if (responseNextAuth?.error) {
+      setErrors(true)
+      return;
+    }
+    router.push("/dashboard");
+
+  }
+  const handleGitHub=async()=>{
+    const responseNextAuth = await signIn("github", {
+      redirect:true,
+    });
+    if (responseNextAuth?.error) {
+      setErrors(true)
+      return
+    }
+  }
+
+
     return (
+      <>
         <div className=" md:w-4/6 max-w-4xl lg:w-1/2 flex flex-col gap-3 items-center bg-black bg-opacity-50 md:bg-transparent rounded-xl md:rounded-none px-4 py-3 lg:py-6 ">
               <h2 className="mt-2 md:mt-5 text-center text-3xl tracking-wider font-bold leading-9 text-white">
                 Inicio Sesión
               </h2>
               <h4 className='text-center text-white'>Introduce tu email para iniciar sesión en la página</h4>
               <div className="mt-3 md:mt-4 w-9/12 max-w-md">
+              {errors ? <ErrorModal message="El e-mail o la contraseña no coinciden"/> : ''}
                 {/* --- FORMULARIO ---- */}
-              <form className="space-y-5" method="POST">
+              <form className="space-y-5" method="POST" onSubmit={handleSubmit} >
                   {/* --- EMAIL ---- */}
-                  <InputForm label='Correo Electrónico' name='email' placeholder='Introduzca su correo electronico' type='email' key={'email'}/>
+                  <InputForm onChange={handleMailChange} label='Correo Electrónico' name='email' placeholder='Introduzca su correo electronico' type='email' key={'email'}/>
                     {/* --- CONTRASEÑA ---- */}
-                  <InputForm label='Contraseña' name='password' placeholder='*******' type='password' key={'pasword'}/>
+                  <InputForm onChange={handlePassChange} label='Contraseña' name='password' placeholder='*******' type='password' key={'pasword'}/>
                 {/* --- RECUEDAME ---- */}
                 <div className="flex items-center justify-between">
                   <div className="flex ml-3 items-center">
@@ -39,22 +91,20 @@ export default function Login(){
                 </div>
                   {/* --- BTN SESION ---- */}
                 <div>
-                  <Link href={'/dashboard'}>
                     <ButtonCustom>
                       Iniciar sesión
                     </ButtonCustom>
-                  </Link>
                   
                 </div>
                 {/* --- BTN REGISTRARSE ---- */}
+              </form>
                 <div className="mt-1">
-                  <Link href={'/register'}>
-                  <ButtonCustom>
-                    Registrarse
-                  </ButtonCustom>
+                  <Link href={'../register'}>
+                    <ButtonCustom>
+                      Registrarse
+                    </ButtonCustom>
                   </Link>
                 </div>
-              </form>
             </div>
 
             {/* --- AUTENTICACIÓNES ---- */}
@@ -72,17 +122,14 @@ export default function Login(){
               {/* --- BOTONES ---- */}
               <div className="mt-1 flex 2xl:flex-col gap-4 flex-row">
                   {/* --- GOOGLE  ---- */}
-                  <ButtonCustom color="gray-200">
-                    <Image src="./google.svg" width={20} height={20} alt="Google" className="w-5 mr-2 h-5"/>
-                    <span className="text-sm font-semibold text-black leading-7">Google</span>
-                  </ButtonCustom>
+                    <GoogleSignInButton>
+                    </GoogleSignInButton>
                   {/* --- GITHUB ---- */}
-                  <ButtonCustom color="gray-200">
-                        <Image src="./github.svg" width={20} height={20} alt="Google" className="w-5 mr-2 h-5"/>
-                        <span className="text-sm font-semibold text-black leading-7">GitHub</span>
-                </ButtonCustom>
+                    <GithubSignInButton>
+                    </GithubSignInButton>
                 </div>
             </div>
           </div>
+      </>
     )
 }

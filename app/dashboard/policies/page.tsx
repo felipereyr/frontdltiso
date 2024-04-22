@@ -1,5 +1,3 @@
-import Aside from "@/app/ui/Aside";
-import Header from "@/app/ui/Header";
 import Image from "next/image";
 
 export default function policies() {
