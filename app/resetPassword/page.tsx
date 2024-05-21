@@ -1,8 +1,9 @@
 // forgot-password.js
-import ResetPassword from "@/app/components/ResetPassword/ResetPassword";
+
+import ResetPassword from '../components/ResetPassword/ResetPassword'
 import Image from 'next/image'
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordPage() {
   return (
     <>
       {/*
